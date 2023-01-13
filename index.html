@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>JavaScript</title>
+    <style>
+        body {
+            margin-top: 15%;
+        }
+
+        #stopwatch-container {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            margin: 100px auto 0;
+            width: fit-content;
+            padding: 10px 20px;
+            box-shadow: 1px 0px 4px 2px #9c9a9a;
+            border-radius: 5px;
+        }
+
+        #stopwatch {
+            margin: 0 auto;
+            text-align: center;
+            font-size: 60px;
+        }
+
+        #buttons-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        #buttons-container button {
+            outline: none;
+            cursor: pointer;
+            color: #fff;
+            background-color: #000;
+            border: none;
+            border-radius: 5px;
+            font-size: 20px;
+            margin: 0 10px;
+            padding: 3px 8px;
+        }
+
+        #buttons-container button:active {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="stopwatch-container">
+        <p id="stopwatch">00:00:00:00</p>
+        <div id="buttons-container">
+            <button onclick="main()" id="main-btn" class="btn">Start</button>
+            <button onclick="reset()" id="reset-btn" class="btn">Reset</button>
+        </div>
+        <img class="img" src="timer.png" alt="">
+    </div>
+    <script>
+        var stopwatch = document.getElementById('stopwatch');
+        var mainButton = document.getElementById('main-btn');
+        var startTime = 0;
+        var elapsedTime = 0;
+        var timeoutId = null;
+
+        function main()
+        {
+            if (mainButton.innerHTML.trim() === 'Start')
+            {
+                startTime = Date.now();
+                startStopwatch();
+                mainButton.innerHTML = 'Stop';
+            } else
+            {
+                elapsedTime += Date.now() - startTime;
+                clearTimeout(timeoutId);
+                mainButton.innerHTML = 'Start';
+            }
+        }
+
+        function reset()
+        {
+            elapsedTime = 0;
+            startTime = Date.now();
+            clearTimeout(timeoutId);
+            mainButton.innerHTML = 'Start';
+            displayTime(0, 0, 0, 0);
+        }
+
+        function startStopwatch()
+        {
+
+            timeoutId = setTimeout(function ()
+            {
+                const time = Date.now() - startTime + elapsedTime;
+
+                const milliseconds = parseInt((time % 1000) / 10)
+                const seconds = parseInt((time / 1000) % 60)
+                const minutes = parseInt((time / (1000 * 60)) % 60)
+                const hour = parseInt((time / (1000 * 60 * 60)) % 24);
+
+                displayTime(hour, minutes, seconds, milliseconds);
+
+                startStopwatch();
+            }, 100);
+        }
+
+        function displayTime(hour, minutes, seconds, milliseconds)
+        {
+            hour = hour < 10 ? '0' + hour : hour;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            milliseconds = milliseconds < 10 ? '0' + milliseconds : milliseconds;
+            stopwatch.innerHTML = hour + ':' + minutes + ':' + seconds + ':' + milliseconds;
+        }
+    </script>
+</body>
+
+</html>
